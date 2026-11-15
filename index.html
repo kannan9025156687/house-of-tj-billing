@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#3B2314">
+<title>House of TJ Billing</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/png" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;700&family=Noto+Sans+Tamil:wght@400;500;700&display=swap">
+<style>
+:root{
+  --bg:#FBF7F0; --surface:#FFFFFF; --ink:#1E120C; --muted:#5E4B3F; --line:#DCCFC2; --chip:#F1E8DC;
+  --brand:#3B2314; --brand-ink:#FFF4E6; --copper:#A8582F; --danger:#B3261E; --ok:#1B7F3A;
+  --font-display:"Archivo Black","Arial Black",system-ui,sans-serif;
+  --font-body:"DM Sans","Noto Sans Tamil",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.4;
+  padding:0 max(12px,env(safe-area-inset-left,0px)) 0 max(12px,env(safe-area-inset-right,0px))}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--copper);outline-offset:2px}
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:20;padding-top:max(10px,env(safe-area-inset-top,0px))}
+.brandline{display:flex;align-items:center;gap:10px}
+.brandline svg{width:38px;height:auto}
+.brandline b{font-family:var(--font-display);font-weight:400;letter-spacing:.1em;font-size:17px;color:var(--brand);display:block;line-height:1.1}
+.brandline small{font-size:11px;letter-spacing:.25em;color:var(--muted);font-weight:700;text-transform:uppercase}
+.tabs{display:flex;gap:6px;margin-left:auto;overflow-x:auto}
+.tab,.pill{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 15px;font-weight:700;font-size:14px;min-height:38px;white-space:nowrap}
+.tab[aria-current="true"],.pill[aria-pressed="true"]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.view{padding:14px 0 120px}
+.inp{width:100%;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:10px 12px;font:inherit;font-size:16px;min-height:44px}
+textarea.inp{min-height:110px;resize:vertical}
+label.f{display:block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:10px 0 4px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1.5px solid var(--brand);background:var(--brand);color:var(--brand-ink);border-radius:12px;padding:11px 18px;font-weight:700;font-size:15px;min-height:46px}
+.btn.alt{background:transparent;color:var(--brand)}
+.btn.danger{background:transparent;color:var(--danger);border-color:var(--danger)}
+.btn.sm{min-height:36px;padding:6px 12px;font-size:13px;border-radius:10px}
+.btn.block{display:flex;width:100%}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.row.nowrap{flex-wrap:nowrap}
+.grow{flex:1;min-width:0}
+
+/* billing screen */
+.split{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+.pick{min-width:0}
+.tabs{scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}
+@media (max-width:700px){.tabs{margin-left:0;width:100%}.tab{padding:7px 12px;font-size:13px}}
+@media (min-width:960px){.split{grid-template-columns:minmax(0,1fr) 400px;align-items:start}}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 0;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;border:1.5px solid var(--line);background:var(--chip);border-radius:999px;padding:7px 14px;font-weight:700;font-size:14px;white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.tile{position:relative;text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:4px;min-height:94px}
+.tile:active{background:var(--chip)}
+.tile .n{font-weight:700;font-size:15px;line-height:1.25}
+.tile .a{font-size:12px;color:var(--muted)}
+.tile .p{margin-top:auto;font-family:var(--font-display);font-size:17px;color:var(--brand)}
+.tile .q{position:absolute;top:8px;right:8px;background:var(--brand);color:var(--brand-ink);border-radius:999px;min-width:26px;height:26px;display:grid;place-items:center;font-weight:700;font-size:13px;padding:0 6px}
+.tile.out{opacity:.45}
+.tile .so{position:absolute;top:8px;right:8px;font-size:11px;font-weight:700;color:var(--danger)}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:baseline}
+.dot.veg{background:var(--ok)}.dot.egg{background:#B45309}.dot.nonveg{background:var(--danger)}
+
+.panel{background:var(--surface);border:1.5px solid var(--line);border-radius:16px;padding:14px}
+@media (max-width:959px){
+  .panel{position:fixed;left:0;right:0;bottom:0;z-index:40;border-radius:18px 18px 0 0;max-height:92%;overflow-y:auto;transform:translateY(105%);transition:transform .22s;
+    padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 30px rgba(60,35,20,.3)}
+  .panel.open{transform:none}
+}
+@media (min-width:960px){.panel{position:sticky;top:78px;max-height:calc(100vh - 92px);overflow-y:auto}.mbar,.scrim{display:none!important}}
+@media (prefers-reduced-motion:reduce){.panel{transition:none}}
+.panel h3{font-family:var(--font-display);font-weight:400;font-size:19px;color:var(--brand);display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.x{border:0;background:var(--chip);border-radius:50%;width:36px;height:36px;font-size:17px}
+@media (min-width:960px){.x{display:none}}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg .pill{flex:1;text-align:center;padding:7px 10px}
+.lines{margin:8px 0}
+.line{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)}
+.line .nm{font-weight:700;min-width:0}
+.line .nm small{display:block;color:var(--muted);font-weight:400;font-size:12px}
+.line .am{font-variant-numeric:tabular-nums;font-weight:700;min-width:64px;text-align:right}
+.step{display:flex;align-items:center;background:var(--brand);color:var(--brand-ink);border-radius:10px;overflow:hidden}
+.step button{background:none;border:0;color:inherit;width:34px;height:34px;font-size:19px;font-weight:700}
+.step b{min-width:22px;text-align:center;font-variant-numeric:tabular-nums}
+.tot{display:grid;grid-template-columns:1fr auto;gap:4px 0;margin-top:8px;font-variant-numeric:tabular-nums}
+.tot .g{font-family:var(--font-display);font-size:24px;color:var(--brand);padding-top:6px;border-top:2px solid var(--brand);margin-top:4px}
+.tot span:nth-child(even){text-align:right}
+.muted{color:var(--muted)}
+.empty{padding:26px 0;text-align:center;color:var(--muted)}
+.mbar{position:fixed;left:0;right:0;bottom:0;z-index:30;padding:10px max(12px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px))}
+.mbar button{display:flex;width:100%;justify-content:space-between;align-items:center;background:var(--brand);color:var(--brand-ink);border:0;border-radius:14px;padding:14px 18px;font-weight:700;box-shadow:0 6px 22px rgba(59,35,20,.35)}
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:35}
+
+/* reports, menu, settings */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:12px 0}
+.card{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:12px}
+.card small{display:block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.card b{font-family:var(--font-display);font-weight:400;font-size:22px;color:var(--brand);font-variant-numeric:tabular-nums}
+.sec{margin-top:20px}
+.sec h2{font-family:var(--font-display);font-weight:400;font-size:18px;color:var(--brand);margin-bottom:8px}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th,td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left;font-size:14px;vertical-align:top}
+th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+td.r,th.r{text-align:right}
+.scroll{overflow-x:auto}
+.bill{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px}
+.bill .h{display:flex;justify-content:space-between;gap:8px;font-weight:700;flex-wrap:wrap}
+.bill .its{color:var(--muted);font-size:13px;margin:4px 0 8px}
+.mi{display:grid;grid-template-columns:1fr 90px auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)}
+.mi .nm{min-width:0}
+.mi .nm input{margin-bottom:4px}
+.mi .ctl{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+.mi label.ck{display:flex;gap:6px;align-items:center;font-size:13px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(86px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px;z-index:90;max-width:92%;text-align:center}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:80;display:grid;place-items:center;padding:16px}
+.modal .box{background:var(--surface);border-radius:16px;padding:16px;width:min(520px,100%);max-height:90%;overflow:auto}
+.hint{font-size:13px;color:var(--muted);margin-top:6px}
+
+/* receipt: hidden on screen, the only thing printed */
+#receipt{display:none}
+@media print{
+  html,body{background:#fff!important;padding:0!important}
+  #app,.toast,.modal{display:none!important}
+  #receipt{display:block!important;width:var(--rw,48mm);margin:0 auto;color:#000;background:#fff;font-family:"DejaVu Sans",Arial,"Noto Sans Tamil",sans-serif;font-size:12px;line-height:1.3;font-weight:600;padding:2mm 0 6mm}
+}
+#receipt .r-c{text-align:center}
+#receipt .r-big{font-size:18px;font-weight:800;letter-spacing:.08em}
+#receipt .r-s{font-size:10.5px;font-weight:500}
+#receipt hr{border:0;border-top:1px dashed #000;margin:5px 0}
+#receipt table{width:100%;border-collapse:collapse}
+#receipt td,#receipt th{border:0;padding:1.5px 0;font-size:12px;color:#000;text-transform:none;letter-spacing:0}
+#receipt th{font-size:11px;border-bottom:1px dashed #000;font-weight:700}
+#receipt .tt{display:flex;justify-content:space-between;gap:6px}
+#receipt .gt{display:flex;justify-content:space-between;font-size:17px;font-weight:800;border-top:1px solid #000;border-bottom:1px solid #000;padding:3px 0;margin:4px 0}
+#receipt.kot td{font-size:15px;font-weight:800}
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="top">
+    <div class="brandline">
+      <svg viewBox="0 0 120 112" aria-hidden="true">
+        <path d="M60 6 8 46v6h10v52h84V52h10v-6L82 22V10H72v4z" fill="#2A170E" stroke="#C8905F" stroke-width="4" stroke-linejoin="round"/>
+        <path d="M60 6 8 46" stroke="#C8905F" stroke-width="5" stroke-linecap="round"/>
+        <rect x="55" y="30" width="10" height="10" fill="none" stroke="#C8905F" stroke-width="2.5"/>
+        <text x="60" y="88" text-anchor="middle" font-family="Georgia,serif" font-weight="bold" font-size="40" fill="#F3D9BD">TJ</text>
+      </svg>
+      <div><b>HOUSE OF TJ</b><small>Billing</small></div>
+    </div>
+    <nav class="tabs" id="tabs" aria-label="Sections">
+      <button class="tab" type="button" data-v="bill">New bill</button>
+      <button class="tab" type="button" data-v="hist">Bills &amp; report</button>
+      <button class="tab" type="button" data-v="menu">Menu</button>
+      <button class="tab" type="button" data-v="set">Settings</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="v-bill" class="view">
+      <div class="split">
+        <div class="pick">
+          <div class="row nowrap"><input id="q" class="inp grow" type="search" placeholder="Search items" autocomplete="off">
+            <button class="pill" id="langBtn" type="button" aria-pressed="false">தமிழ்</button></div>
+          <div id="chips" class="chips"></div>
+          <div id="grid" class="grid"></div>
+        </div>
+        <aside id="panel" class="panel" aria-label="Current bill">
+          <h3><span>Current bill</span><button class="x" type="button" data-act="closePanel" aria-label="Close">✕</button></h3>
+          <div class="seg" id="typeSeg">
+            <button class="pill" type="button" data-act="type" data-id="dine">Dine-in</button>
+            <button class="pill" type="button" data-act="type" data-id="take">Takeaway</button>
+          </div>
+          <div id="tableBox">
+            <label class="f" for="tbl">Table</label>
+            <div class="row"><input id="tbl" class="inp grow" inputmode="numeric" placeholder="Table number"></div>
+          </div>
+          <div class="row nowrap">
+            <div class="grow"><label class="f" for="cname">Customer</label><input id="cname" class="inp" placeholder="Name (optional)"></div>
+            <div class="grow"><label class="f" for="cphone">Phone</label><input id="cphone" class="inp" inputmode="tel" placeholder="Optional"></div>
+          </div>
+          <div id="lines" class="lines"></div>
+          <div class="row nowrap">
+            <div class="grow"><label class="f" for="disc">Discount</label><input id="disc" class="inp" inputmode="decimal" placeholder="0"></div>
+            <div style="padding-top:22px"><div class="seg"><button class="pill" type="button" data-act="dtype" data-id="amt" id="dAmt">₹</button><button class="pill" type="button" data-act="dtype" data-id="pct" id="dPct">%</button></div></div>
+          </div>
+          <div id="tot" class="tot"></div>
+          <label class="f">Payment</label>
+          <div class="seg" id="paySeg">
+            <button class="pill" type="button" data-act="pay" data-id="Cash">Cash</button>
+            <button class="pill" type="button" data-act="pay" data-id="UPI">UPI</button>
+            <button class="pill" type="button" data-act="pay" data-id="Card">Card</button>
+          </div>
+          <div id="recvBox" class="row nowrap">
+            <div class="grow"><label class="f" for="recv">Cash received</label><input id="recv" class="inp" inputmode="decimal" placeholder="0"></div>
+            <div class="grow"><label class="f">Change</label><div class="inp" id="change" style="display:flex;align-items:center;font-weight:700">₹0</div></div>
+          </div>
+          <div class="row" style="margin-top:14px">
+            <button class="btn grow" type="button" data-act="printBill">Print bill</button>
+            <button class="btn alt grow" type="button" data-act="printKot">Print KOT</button>
+          </div>
+          <div class="row" style="margin-top:8px">
+            <button class="btn alt sm grow" type="button" data-act="saveOnly">Save without printing</button>
+            <button class="btn alt sm grow" type="button" data-act="paste">Paste WhatsApp order</button>
+            <button class="btn danger sm" type="button" data-act="clear">Clear</button>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="v-hist" class="view" hidden></section>
+    <section id="v-menu" class="view" hidden></section>
+    <section id="v-set" class="view" hidden></section>
+  </main>
+
+  <div class="scrim" id="scrim" hidden data-act="closePanel"></div>
+  <div class="mbar" id="mbar" hidden><button type="button" data-act="openPanel"><span id="mCount"></span><span id="mAmt"></span></button></div>
+</div>
+<div id="receipt"></div>
+<div id="layer"></div>
+
+<script>
+"use strict";
+var DEFAULT_MENU=[
+ {id:"burger",c:"burgers",en:"Burger",ta:"பர்கர்",p:79},
+ {id:"vegsw",c:"sandwiches",en:"Veg Sandwich",ta:"வெஜ் சாண்ட்விச்",p:59,d:"veg"},
+ {id:"eggsw",c:"sandwiches",en:"Egg Sandwich",ta:"முட்டை சாண்ட்விச்",p:69,d:"egg"},
+ {id:"chksw",c:"sandwiches",en:"Chicken Sandwich",ta:"சிக்கன் சாண்ட்விச்",p:79,d:"nonveg"},
+ {id:"tjbo",c:"sandwiches",en:"TJ Special Bread Omelette",ta:"டிஜே ஸ்பெஷல் பிரெட் ஆம்லெட்",p:49,d:"egg"},
+ {id:"chbo",c:"sandwiches",en:"Cheese Bread Omelette",ta:"சீஸ் பிரெட் ஆம்லெட்",p:59,d:"egg"},
+ {id:"chmomo",c:"momos",en:"Chicken Momos",ta:"சிக்கன் மோமோஸ்",n:"5 pcs",p:69,d:"nonveg"},
+ {id:"vmomo",c:"momos",en:"Veg Momos",ta:"வெஜ் மோமோஸ்",n:"5 pcs",p:69,d:"veg"},
+ {id:"wings",c:"snacks",en:"Wings",ta:"சிக்கன் விங்ஸ்",n:"4 nos",p:99,d:"nonveg"},
+ {id:"pop",c:"snacks",en:"Chicken Popcorn",ta:"சிக்கன் பாப்கார்ன்",n:"10 pcs",p:69,d:"nonveg"},
+ {id:"fing",c:"snacks",en:"Chicken Fingers",ta:"சிக்கன் ஃபிங்கர்ஸ்",n:"5 pcs",p:69,d:"nonveg"},
+ {id:"fries",c:"snacks",en:"French Fries",ta:"பிரெஞ்சு ஃப்ரைஸ்",p:59,d:"veg"},
+ {id:"pots",c:"snacks",en:"Potato Pops",ta:"உருளை பாப்ஸ்",n:"10 pcs",p:59,d:"veg"},
+ {id:"mojito",c:"drinks",en:"Mojito",ta:"மோஜிடோ",p:49,d:"veg"},
+ {id:"straw",c:"shakes",en:"Strawberry Shake",ta:"ஸ்ட்ராபெரி ஷேக்",p:69,d:"veg"},
+ {id:"kit",c:"shakes",en:"KitKat Shake",ta:"கிட்கேட் ஷேக்",p:69,d:"veg"},
+ {id:"ice",c:"shakes",en:"Ice Cream Shake",ta:"ஐஸ்கிரீம் ஷேக்",p:79,d:"veg"},
+ {id:"brow",c:"shakes",en:"Crumbled Brownie Shake",ta:"க்ரம்பிள்டு பிரவுனி ஷேக்",p:79,d:"veg"},
+ {id:"peri",c:"addons",en:"Peri Peri",ta:"பெரி பெரி",p:10,d:"veg"},
+ {id:"dip",c:"addons",en:"TJ Special Dip",ta:"டிஜே ஸ்பெஷல் டிப்",p:20},
+ {id:"xcheese",c:"addons",en:"Extra Cheese",ta:"கூடுதல் சீஸ்",p:20,d:"veg"}
+];
+var CATS=[{id:"burgers",en:"Burgers",ta:"பர்கர்கள்"},{id:"sandwiches",en:"Sandwiches",ta:"சாண்ட்விச்கள்"},{id:"momos",en:"Momos",ta:"மோமோஸ்"},
+ {id:"snacks",en:"Snacks",ta:"ஸ்நாக்ஸ்"},{id:"drinks",en:"Cool Drinks",ta:"குளிர் பானங்கள்"},{id:"shakes",en:"Milk Shakes",ta:"மில்க் ஷேக்ஸ்"},{id:"addons",en:"Add-ons",ta:"கூடுதல்"}];
+var DEFAULT_SET={address:"",phone:"",gstin:"",gstOn:false,gstPct:5,gstMode:"add",paper:"58",footer:"Thank you! Visit again"};
+var LS={menu:"tjb-menu",set:"tjb-set",bills:"tjb-bills",seq:"tjb-seq"};
+
+function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){toast("Could not save. Browser storage is full or blocked.")}}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function num(v){var n=parseFloat(v);return isFinite(n)?n:0}
+function fmt(n){return n%1===0?String(n):n.toFixed(2)}
+function m2(n){return n.toFixed(2)}
+function pad(n){return String(n).padStart(2,"0")}
+function ymd(t){var d=new Date(t);return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
+function dmy(t){var d=new Date(t);return pad(d.getDate())+"-"+pad(d.getMonth()+1)+"-"+d.getFullYear()+" "+pad(d.getHours())+":"+pad(d.getMinutes())}
+
+var menu=load(LS.menu,null)||JSON.parse(JSON.stringify(DEFAULT_MENU));
+var set=Object.assign({},DEFAULT_SET,load(LS.set,{}));
+var bills=load(LS.bills,[]);
+var cart={};
+var ui={view:"bill",cat:"all",q:"",ta:false,type:"dine",table:"",name:"",phone:"",dtype:"amt",disc:"",pay:"Cash",recv:"",day:ymd(Date.now()),confirm:""};
+
+function item(id){for(var i=0;i<menu.length;i++)if(menu[i].id===id)return menu[i];return null}
+function cartItems(){var r=[];for(var k in cart){var it=item(k);if(it&&cart[k]>0)r.push({id:it.id,en:it.en,ta:it.ta,p:it.p,q:cart[k]})}return r}
+function cnt(){var n=0;for(var k in cart)n+=cart[k];return n}
+function calc(){
+  var sub=0;cartItems().forEach(function(i){sub+=i.p*i.q});
+  var dv=num(ui.disc),disc=ui.dtype==="pct"?sub*dv/100:dv;disc=Math.max(0,Math.min(disc,sub));
+  var net=sub-disc,gst=0,total=net;
+  if(set.gstOn){var r=num(set.gstPct);if(set.gstMode==="incl")gst=net*r/(100+r);else{gst=net*r/100;total=net+gst}}
+  var rounded=Math.round(total);
+  return{sub:sub,disc:disc,gst:gst,total:rounded,round:rounded-total};
+}
+function toast(msg){var e=document.createElement("div");e.className="toast";e.textContent=msg;document.body.appendChild(e);setTimeout(function(){e.remove()},2200)}
+
+/* ---------- billing screen ---------- */
+function renderChips(){
+  var h='<button class="chip" type="button" data-act="cat" data-id="all" aria-pressed="'+(ui.cat==="all")+'">All</button>';
+  CATS.forEach(function(c){h+='<button class="chip" type="button" data-act="cat" data-id="'+c.id+'" aria-pressed="'+(ui.cat===c.id)+'">'+esc(ui.ta?c.ta:c.en)+'</button>'});
+  document.getElementById("chips").innerHTML=h;
+}
+function renderGrid(){
+  var q=ui.q.toLowerCase(),h="";
+  menu.forEach(function(it){
+    if(ui.cat!=="all"&&it.c!==ui.cat)return;
+    if(q&&(it.en+" "+(it.ta||"")).toLowerCase().indexOf(q)<0)return;
+    var qty=cart[it.id]||0,main=ui.ta&&it.ta?it.ta:it.en,alt=ui.ta?it.en:(it.ta||"");
+    h+='<button class="tile'+(it.out?' out':'')+'" type="button" data-act="add" data-id="'+esc(it.id)+'"'+(it.out?' disabled':'')+'>'
+      +(it.out?'<span class="so">Sold out</span>':(qty?'<span class="q">'+qty+'</span>':''))
+      +'<span class="n">'+(it.d?'<i class="dot '+it.d+'"></i>':'')+esc(main)+(it.n?' ('+esc(it.n)+')':'')+'</span>'
+      +'<span class="a">'+esc(alt)+'</span><span class="p">₹'+fmt(it.p)+'</span></button>';
+  });
+  document.getElementById("grid").innerHTML=h||'<div class="empty">No items found.</div>';
+}
+function renderPanel(){
+  var items=cartItems(),h="";
+  items.forEach(function(i){
+    h+='<div class="line"><div class="nm">'+esc(i.en)+'<small>₹'+fmt(i.p)+' each</small></div>'
+      +'<div class="step"><button type="button" data-act="dec" data-id="'+esc(i.id)+'" aria-label="Remove one">−</button><b>'+i.q+'</b><button type="button" data-act="inc" data-id="'+esc(i.id)+'" aria-label="Add one">+</button></div>'
+      +'<div class="am">₹'+fmt(i.p*i.q)+'</div></div>';
+  });
+  document.getElementById("lines").innerHTML=h||'<div class="empty">Tap items to add them to the bill.</div>';
+  var c=calc(),t='<span>Subtotal</span><span>₹'+m2(c.sub)+'</span>';
+  if(c.disc)t+='<span>Discount</span><span>−₹'+m2(c.disc)+'</span>';
+  if(set.gstOn)t+='<span>GST '+esc(set.gstPct)+'%'+(set.gstMode==="incl"?' (included)':'')+'</span><span>₹'+m2(c.gst)+'</span>';
+  if(Math.abs(c.round)>=0.005)t+='<span>Round off</span><span>'+(c.round>0?'+':'−')+'₹'+m2(Math.abs(c.round))+'</span>';
+  t+='<span class="g">Total</span><span class="g">₹'+c.total+'</span>';
+  document.getElementById("tot").innerHTML=t;
+  var rec=num(ui.recv);document.getElementById("change").textContent=rec>c.total?"₹"+fmt(rec-c.total):"₹0";
+  document.getElementById("recvBox").hidden=ui.pay!=="Cash";
+  document.getElementById("tableBox").hidden=ui.type!=="dine";
+  [["typeSeg","type",ui.type],["paySeg","pay",ui.pay]].forEach(function(x){
+    document.querySelectorAll("#"+x[0]+" .pill").forEach(function(b){b.setAttribute("aria-pressed",String(b.getAttribute("data-id")===x[2]))});
+  });
+  document.getElementById("dAmt").setAttribute("aria-pressed",String(ui.dtype==="amt"));
+  document.getElementById("dPct").setAttribute("aria-pressed",String(ui.dtype==="pct"));
+  var n=cnt(),mb=document.getElementById("mbar");
+  mb.hidden=!n||document.getElementById("panel").classList.contains("open");
+  document.getElementById("mCount").textContent="View bill · "+n+(n===1?" item":" items");
+  document.getElementById("mAmt").textContent="₹"+c.total;
+}
+function refreshBill(){renderGrid();renderPanel()}
+function clearOrder(){cart={};ui.disc="";ui.recv="";ui.table="";ui.name="";ui.phone="";
+  ["disc","recv","tbl","cname","cphone"].forEach(function(id){document.getElementById(id).value=""});refreshBill()}
+
+/* ---------- bills, receipt, printing ---------- */
+function nextNo(){
+  var d=ymd(Date.now()),sq=load(LS.seq,{});
+  if(sq.d!==d)sq={d:d,n:0};
+  sq.n++;save(LS.seq,sq);
+  return"TJ"+d.replace(/-/g,"")+"-"+String(sq.n).padStart(3,"0");
+}
+function makeBill(){
+  var items=cartItems();
+  if(!items.length){toast("Add items first");return null}
+  var c=calc();
+  var b={no:nextNo(),ts:Date.now(),type:ui.type,table:ui.type==="dine"?ui.table:"",name:ui.name,phone:ui.phone,
+    items:items.map(function(i){return{id:i.id,en:i.en,p:i.p,q:i.q}}),sub:c.sub,disc:c.disc,gst:c.gst,round:c.round,total:c.total,
+    pay:ui.pay,recv:ui.pay==="Cash"?num(ui.recv):0,gstOn:set.gstOn,gstPct:set.gstPct,gstMode:set.gstMode};
+  bills.unshift(b);save(LS.bills,bills);return b;
+}
+function receiptHtml(b,mode){
+  var h='<div class="r-c r-big">HOUSE OF TJ</div><div class="r-c r-s">CAFÉ · COFFEE · FOOD</div>';
+  if(mode==="bill"){
+    if(set.address)h+='<div class="r-c r-s">'+esc(set.address)+'</div>';
+    if(set.phone)h+='<div class="r-c r-s">Ph: '+esc(set.phone)+'</div>';
+    if(set.gstin&&b.gstOn)h+='<div class="r-c r-s">GSTIN: '+esc(set.gstin)+'</div>';
+  }
+  h+='<hr>';
+  if(mode==="kot")h+='<div class="r-c r-big">KOT</div>';
+  if(b.no)h+='<div class="tt"><span>Bill: '+esc(b.no)+'</span></div>';
+  h+='<div>'+dmy(b.ts)+'</div>';
+  h+='<div>'+(b.type==="dine"?"Dine-in"+(b.table?" · Table "+esc(b.table):""):"Takeaway")+'</div>';
+  if(mode==="bill"&&b.name)h+='<div>Name: '+esc(b.name)+(b.phone?" · "+esc(b.phone):"")+'</div>';
+  h+='<hr><table><tr><th>Item</th><th style="text-align:center">Qty</th>'+(mode==="bill"?'<th style="text-align:right">Amt</th>':'')+'</tr>';
+  b.items.forEach(function(i){
+    h+='<tr><td>'+esc(i.en)+'</td><td style="text-align:center">'+i.q+'</td>'+(mode==="bill"?'<td style="text-align:right">'+m2(i.p*i.q)+'</td>':'')+'</tr>';
+  });
+  h+='</table><hr>';
+  if(mode==="bill"){
+    h+='<div class="tt"><span>Subtotal</span><span>'+m2(b.sub)+'</span></div>';
+    if(b.disc)h+='<div class="tt"><span>Discount</span><span>-'+m2(b.disc)+'</span></div>';
+    if(b.gstOn)h+='<div class="tt"><span>GST '+esc(b.gstPct)+'%'+(b.gstMode==="incl"?' (incl.)':'')+'</span><span>'+m2(b.gst)+'</span></div>';
+    if(Math.abs(b.round)>=0.005)h+='<div class="tt"><span>Round off</span><span>'+(b.round>0?'+':'-')+m2(Math.abs(b.round))+'</span></div>';
+    h+='<div class="gt"><span>TOTAL</span><span>Rs.'+b.total+'</span></div>';
+    h+='<div class="tt"><span>Paid by</span><span>'+esc(b.pay)+'</span></div>';
+    if(b.pay==="Cash"&&b.recv>b.total)h+='<div class="tt"><span>Received</span><span>'+m2(b.recv)+'</span></div><div class="tt"><span>Change</span><span>'+m2(b.recv-b.total)+'</span></div>';
+    h+='<hr><div class="r-c">'+esc(set.footer||"")+'</div>';
+  }
+  return h;
+}
+function doPrint(b,mode){
+  var r=document.getElementById("receipt");
+  r.className=mode==="kot"?"kot":"";
+  r.style.setProperty("--rw",set.paper==="80"?"72mm":"48mm");
+  r.innerHTML=receiptHtml(b,mode);
+  var st=document.getElementById("pageSize");
+  if(!st){st=document.createElement("style");st.id="pageSize";document.head.appendChild(st)}
+  st.textContent="@page{size:"+(set.paper==="80"?"80mm":"58mm")+" auto;margin:0}";
+  setTimeout(function(){try{window.print()}catch(e){toast("Printing is not available here. Open this page in your browser.")}},60);
+}
+function closePanel(){document.getElementById("panel").classList.remove("open");document.getElementById("scrim").hidden=true;renderPanel()}
+function openPanel(){document.getElementById("panel").classList.add("open");document.getElementById("scrim").hidden=false;document.getElementById("mbar").hidden=true}
+
+/* ---------- history and report ---------- */
+function renderHist(){
+  var v=document.getElementById("v-hist"),day=bills.filter(function(b){return ymd(b.ts)===ui.day});
+  var tot=0,disc=0,gst=0,pay={},sold={};
+  day.forEach(function(b){tot+=b.total;disc+=b.disc||0;gst+=b.gst||0;pay[b.pay]=(pay[b.pay]||0)+b.total;
+    b.items.forEach(function(i){var s=sold[i.en]||(sold[i.en]={q:0,a:0});s.q+=i.q;s.a+=i.p*i.q})});
+  var h='<div class="row"><div><label class="f" for="day">Date</label><input id="day" class="inp" type="date" value="'+ui.day+'"></div>'
+    +'<button class="btn alt sm" type="button" data-act="csv" style="margin-top:22px">Download CSV</button></div>'
+    +'<div class="cards"><div class="card"><small>Bills</small><b>'+day.length+'</b></div><div class="card"><small>Sales</small><b>₹'+fmt(tot)+'</b></div>'
+    +'<div class="card"><small>Discounts</small><b>₹'+fmt(Math.round(disc*100)/100)+'</b></div>'
+    +(set.gstOn?'<div class="card"><small>GST</small><b>₹'+m2(gst)+'</b></div>':'')+'</div>';
+  var pk=Object.keys(pay);
+  if(pk.length)h+='<div class="cards">'+pk.map(function(k){return'<div class="card"><small>'+esc(k)+'</small><b>₹'+fmt(pay[k])+'</b></div>'}).join("")+'</div>';
+  var sk=Object.keys(sold).sort(function(a,b){return sold[b].q-sold[a].q});
+  if(sk.length)h+='<div class="sec"><h2>Items sold</h2><div class="scroll"><table><tr><th>Item</th><th class="r">Qty</th><th class="r">Amount</th></tr>'
+    +sk.map(function(k){return'<tr><td>'+esc(k)+'</td><td class="r">'+sold[k].q+'</td><td class="r">₹'+fmt(sold[k].a)+'</td></tr>'}).join("")+'</table></div></div>';
+  h+='<div class="sec"><h2>Bills</h2>';
+  if(!day.length)h+='<div class="empty">No bills on this date.</div>';
+  day.forEach(function(b){
+    var cf=ui.confirm===b.no;
+    h+='<div class="bill"><div class="h"><span>'+esc(b.no)+'</span><span>₹'+b.total+'</span></div>'
+      +'<div class="muted" style="font-size:13px">'+dmy(b.ts)+' · '+(b.type==="dine"?"Dine-in"+(b.table?" · Table "+esc(b.table):""):"Takeaway")+' · '+esc(b.pay)+(b.name?' · '+esc(b.name):'')+'</div>'
+      +'<div class="its">'+b.items.map(function(i){return i.q+" × "+esc(i.en)}).join(", ")+'</div>'
+      +'<div class="row"><button class="btn alt sm" type="button" data-act="reprint" data-id="'+esc(b.no)+'">Reprint</button>'
+      +'<button class="btn danger sm" type="button" data-act="del" data-id="'+esc(b.no)+'">'+(cf?"Tap again to delete":"Delete")+'</button></div></div>';
+  });
+  v.innerHTML=h+'</div>';
+}
+function csv(){
+  var day=bills.filter(function(b){return ymd(b.ts)===ui.day});
+  if(!day.length){toast("No bills on this date");return}
+  var q=function(s){return'"'+String(s==null?"":s).replace(/"/g,'""')+'"'};
+  var rows=[["Bill no","Date time","Type","Table","Customer","Phone","Items","Subtotal","Discount","GST","Round off","Total","Payment"]];
+  day.forEach(function(b){rows.push([b.no,dmy(b.ts),b.type,b.table,b.name,b.phone,b.items.map(function(i){return i.q+" x "+i.en}).join("; "),b.sub,b.disc,m2(b.gst||0),m2(b.round||0),b.total,b.pay])});
+  var blob=new Blob(["﻿"+rows.map(function(r){return r.map(q).join(",")}).join("\n")],{type:"text/csv"});
+  dl(blob,"house-of-tj-bills-"+ui.day+".csv");
+}
+function dl(blob,name){var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500)}
+
+/* ---------- menu editor ---------- */
+function renderMenu(){
+  var v=document.getElementById("v-menu"),h='<p class="hint">Change prices and names here. Mark an item sold out to stop it being added to bills. Changes save on this device.</p>';
+  CATS.forEach(function(c){
+    var its=menu.filter(function(i){return i.c===c.id});if(!its.length)return;
+    h+='<div class="sec"><h2>'+esc(c.en)+'</h2>';
+    its.forEach(function(it){
+      h+='<div class="mi"><div class="nm"><input class="inp" data-f="en" data-id="'+esc(it.id)+'" value="'+esc(it.en)+'" aria-label="Item name">'
+        +'<input class="inp" data-f="ta" data-id="'+esc(it.id)+'" value="'+esc(it.ta||"")+'" placeholder="Tamil name" aria-label="Tamil name"></div>'
+        +'<input class="inp" data-f="p" data-id="'+esc(it.id)+'" inputmode="decimal" value="'+esc(it.p)+'" aria-label="Price">'
+        +'<div class="ctl"><label class="ck"><input type="checkbox" data-f="out" data-id="'+esc(it.id)+'"'+(it.out?' checked':'')+'> Sold out</label>'
+        +'<button class="btn danger sm" type="button" data-act="delItem" data-id="'+esc(it.id)+'">'+(ui.confirm===it.id?"Tap again":"Remove")+'</button></div></div>';
+    });
+    h+='</div>';
+  });
+  h+='<div class="sec"><h2>Add an item</h2><div class="row"><input id="nEn" class="inp grow" placeholder="Item name"><input id="nTa" class="inp grow" placeholder="Tamil name (optional)">'
+    +'<select id="nCat" class="inp" style="width:auto">'+CATS.map(function(c){return'<option value="'+c.id+'">'+esc(c.en)+'</option>'}).join("")+'</select>'
+    +'<input id="nP" class="inp" style="width:100px" inputmode="decimal" placeholder="Price"><button class="btn" type="button" data-act="addItem">Add</button></div></div>'
+    +'<div class="sec"><button class="btn danger sm" type="button" data-act="resetMenu">'+(ui.confirm==="reset"?"Tap again to reset the whole menu":"Reset menu to the original prices")+'</button></div>';
+  v.innerHTML=h;
+}
+
+/* ---------- settings ---------- */
+function renderSet(){
+  var v=document.getElementById("v-set");
+  v.innerHTML='<div class="sec" style="margin-top:0"><h2>Bill header and footer</h2>'
+   +'<label class="f" for="sAddr">Address</label><input id="sAddr" class="inp" data-s="address" value="'+esc(set.address)+'" placeholder="Shop address">'
+   +'<label class="f" for="sPh">Phone</label><input id="sPh" class="inp" data-s="phone" inputmode="tel" value="'+esc(set.phone)+'">'
+   +'<label class="f" for="sFt">Footer line</label><input id="sFt" class="inp" data-s="footer" value="'+esc(set.footer)+'"></div>'
+   +'<div class="sec"><h2>Printer</h2><label class="f">Paper width</label><div class="seg" id="paperSeg" style="max-width:320px">'
+   +'<button class="pill" type="button" data-act="paper" data-id="58" aria-pressed="'+(set.paper==="58")+'">58 mm</button>'
+   +'<button class="pill" type="button" data-act="paper" data-id="80" aria-pressed="'+(set.paper==="80")+'">80 mm</button></div>'
+   +'<p class="hint">Choose your printer in the print window that opens when you tap Print. Turn off "Headers and footers" and set margins to None there if your browser shows those options.</p>'
+   +'<div class="row" style="margin-top:10px"><button class="btn alt sm" type="button" data-act="testPrint">Print a test bill</button></div></div>'
+   +'<div class="sec"><h2>GST</h2><div class="seg" style="max-width:320px"><button class="pill" type="button" data-act="gst" data-id="off" aria-pressed="'+(!set.gstOn)+'">Off</button>'
+   +'<button class="pill" type="button" data-act="gst" data-id="on" aria-pressed="'+set.gstOn+'">On</button></div>'
+   +'<div id="gstBox"'+(set.gstOn?'':' hidden')+'><label class="f" for="sGst">GSTIN</label><input id="sGst" class="inp" data-s="gstin" value="'+esc(set.gstin)+'">'
+   +'<div class="row nowrap"><div class="grow"><label class="f" for="sPct">GST %</label><input id="sPct" class="inp" data-s="gstPct" inputmode="decimal" value="'+esc(set.gstPct)+'"></div>'
+   +'<div class="grow"><label class="f">Prices</label><div class="seg"><button class="pill" type="button" data-act="gmode" data-id="add" aria-pressed="'+(set.gstMode==="add")+'">GST added</button>'
+   +'<button class="pill" type="button" data-act="gmode" data-id="incl" aria-pressed="'+(set.gstMode==="incl")+'">GST included</button></div></div></div></div></div>'
+   +'<div class="sec"><h2>Backup</h2><p class="hint">Bills and the menu are stored in this browser on this device. Download a backup regularly. Clearing browser data erases them.</p>'
+   +'<div class="row" style="margin-top:8px"><button class="btn alt sm" type="button" data-act="backup">Download backup</button>'
+   +'<label class="btn alt sm" for="restore" style="cursor:pointer">Restore backup</label><input id="restore" type="file" accept=".json,application/json" hidden></div></div>';
+}
+
+/* ---------- WhatsApp order paste ---------- */
+function openPaste(){
+  var L=document.getElementById("layer");
+  L.innerHTML='<div class="modal" data-act="closeModal"><div class="box" role="dialog" aria-label="Paste WhatsApp order"><h2 style="font-family:var(--font-display);font-weight:400;color:var(--brand);margin-bottom:8px">Paste WhatsApp order</h2>'
+   +'<textarea id="pasteBox" class="inp" placeholder="Paste the order message from the menu page here"></textarea>'
+   +'<div class="row" style="margin-top:10px"><button class="btn grow" type="button" data-act="doPaste">Add to bill</button><button class="btn alt" type="button" data-act="closeModal">Cancel</button></div></div></div>';
+  setTimeout(function(){var e=document.getElementById("pasteBox");if(e)e.focus()},50);
+}
+function parseOrder(text){
+  var added=0,miss=[];
+  var tm=/Table\s*(\d+)/i.exec(text);if(tm){ui.type="dine";ui.table=tm[1];document.getElementById("tbl").value=tm[1]}
+  else if(/Takeaway/i.test(text))ui.type="take";
+  var nm=/^\s*Name:\s*(.+)$/im.exec(text);if(nm){ui.name=nm[1].trim();document.getElementById("cname").value=ui.name}
+  text.split(/\r?\n/).forEach(function(line){
+    var m=/^\s*(\d+)\s*[×xX]\s*(.+?)\s*[–—-]\s*(?:₹|Rs\.?)?\s*[\d.]+\s*$/.exec(line);if(!m)return;
+    var q=parseInt(m[1],10),nameKey=m[2].replace(/\s*\(.*?\)\s*$/,"").trim().toLowerCase();
+    var f=menu.filter(function(i){return i.en.toLowerCase()===nameKey})[0]||menu.filter(function(i){return i.en.toLowerCase().indexOf(nameKey)===0})[0];
+    if(f){cart[f.id]=(cart[f.id]||0)+q;added++}else miss.push(m[2]);
+  });
+  return{added:added,miss:miss};
+}
+
+/* ---------- events ---------- */
+document.addEventListener("click",function(e){
+  var b=e.target.closest("[data-act],[data-v]");if(!b)return;
+  if(b.hasAttribute("data-v")){setView(b.getAttribute("data-v"));return}
+  var a=b.getAttribute("data-act"),id=b.getAttribute("data-id");
+  if(a==="closeModal"){if(e.target.closest(".box")&&!e.target.closest("button"))return;document.getElementById("layer").innerHTML="";return}
+  if(a==="add"){cart[id]=(cart[id]||0)+1;refreshBill()}
+  else if(a==="inc"){cart[id]=(cart[id]||0)+1;refreshBill()}
+  else if(a==="dec"){var q=(cart[id]||0)-1;if(q<=0)delete cart[id];else cart[id]=q;refreshBill()}
+  else if(a==="cat"){ui.cat=id;renderChips();renderGrid()}
+  else if(a==="type"){ui.type=id;renderPanel()}
+  else if(a==="pay"){ui.pay=id;renderPanel()}
+  else if(a==="dtype"){ui.dtype=id;renderPanel()}
+  else if(a==="clear"){clearOrder();closePanel()}
+  else if(a==="openPanel")openPanel();
+  else if(a==="closePanel")closePanel();
+  else if(a==="printBill"){var bl=makeBill();if(bl){var keep={type:ui.type};clearOrder();closePanel();doPrint(bl,"bill");toast("Saved "+bl.no)}}
+  else if(a==="saveOnly"){var bs=makeBill();if(bs){clearOrder();closePanel();toast("Saved "+bs.no)}}
+  else if(a==="printKot"){var it=cartItems();if(!it.length){toast("Add items first");return}doPrint({ts:Date.now(),type:ui.type,table:ui.table,items:it},"kot")}
+  else if(a==="paste")openPaste();
+  else if(a==="doPaste"){var r=parseOrder(document.getElementById("pasteBox").value);document.getElementById("layer").innerHTML="";refreshBill();
+    toast(r.added?("Added "+r.added+" item"+(r.added>1?"s":"")+(r.miss.length?". Not found: "+r.miss.join(", "):"")):"No items found in that message")}
+  else if(a==="reprint"){var f=bills.filter(function(x){return x.no===id})[0];if(f)doPrint(f,"bill")}
+  else if(a==="del"){if(ui.confirm===id){bills=bills.filter(function(x){return x.no!==id});save(LS.bills,bills);ui.confirm=""}else ui.confirm=id;renderHist()}
+  else if(a==="csv")csv();
+  else if(a==="delItem"){if(ui.confirm===id){menu=menu.filter(function(x){return x.id!==id});delete cart[id];save(LS.menu,menu);ui.confirm=""}else ui.confirm=id;renderMenu()}
+  else if(a==="resetMenu"){if(ui.confirm==="reset"){menu=JSON.parse(JSON.stringify(DEFAULT_MENU));save(LS.menu,menu);ui.confirm="";toast("Menu reset")}else ui.confirm="reset";renderMenu()}
+  else if(a==="addItem"){var en=document.getElementById("nEn").value.trim(),p=num(document.getElementById("nP").value);
+    if(!en||p<=0){toast("Enter a name and a price");return}
+    menu.push({id:"c"+Date.now(),c:document.getElementById("nCat").value,en:en,ta:document.getElementById("nTa").value.trim(),p:p});save(LS.menu,menu);renderMenu();toast("Added "+en)}
+  else if(a==="paper"){set.paper=id;save(LS.set,set);renderSet()}
+  else if(a==="gst"){set.gstOn=id==="on";save(LS.set,set);renderSet();renderPanel()}
+  else if(a==="gmode"){set.gstMode=id;save(LS.set,set);renderSet();renderPanel()}
+  else if(a==="testPrint"){doPrint({no:"TJ-TEST-001",ts:Date.now(),type:"dine",table:"1",items:[{en:"Burger",p:79,q:2},{en:"Mojito",p:49,q:1}],sub:207,disc:0,gst:0,round:0,total:207,pay:"Cash",recv:250,gstOn:false,gstPct:set.gstPct,gstMode:set.gstMode},"bill")}
+  else if(a==="backup"){dl(new Blob([JSON.stringify({v:1,menu:menu,set:set,bills:bills})],{type:"application/json"}),"house-of-tj-backup-"+ymd(Date.now())+".json")}
+});
+document.addEventListener("input",function(e){
+  var t=e.target,id=t.id;
+  if(id==="q"){ui.q=t.value.trim();renderGrid()}
+  else if(id==="tbl"){ui.table=t.value.trim()}
+  else if(id==="cname"){ui.name=t.value}
+  else if(id==="cphone"){ui.phone=t.value}
+  else if(id==="disc"){ui.disc=t.value;renderPanel()}
+  else if(id==="recv"){ui.recv=t.value;renderPanel()}
+  else if(t.hasAttribute("data-s")){var k=t.getAttribute("data-s");set[k]=k==="gstPct"?num(t.value):t.value;save(LS.set,set);renderPanel()}
+  else if(t.hasAttribute("data-f")){var it=item(t.getAttribute("data-id")),f=t.getAttribute("data-f");if(!it)return;
+    if(f==="p")it.p=num(t.value);else if(f==="out")it.out=t.checked;else it[f]=t.value;
+    save(LS.menu,menu);if(f==="out")renderMenu()}
+});
+document.addEventListener("change",function(e){
+  var t=e.target;
+  if(t.id==="day"){ui.day=t.value||ymd(Date.now());ui.confirm="";renderHist()}
+  else if(t.id==="restore"&&t.files&&t.files[0]){
+    var fr=new FileReader();fr.onload=function(){try{var d=JSON.parse(fr.result);
+      if(!Array.isArray(d.menu)||!Array.isArray(d.bills))throw 0;
+      menu=d.menu;bills=d.bills;set=Object.assign({},DEFAULT_SET,d.set||{});save(LS.menu,menu);save(LS.bills,bills);save(LS.set,set);renderSet();refreshBill();toast("Backup restored")}
+      catch(x){toast("That file is not a valid backup")}};fr.readAsText(t.files[0]);t.value="";
+  }
+});
+document.getElementById("langBtn").addEventListener("click",function(){ui.ta=!ui.ta;this.setAttribute("aria-pressed",String(ui.ta));this.textContent=ui.ta?"English":"தமிழ்";renderChips();renderGrid()});
+
+function setView(v){
+  ui.view=v;ui.confirm="";
+  ["bill","hist","menu","set"].forEach(function(x){document.getElementById("v-"+x).hidden=x!==v});
+  document.querySelectorAll("#tabs .tab").forEach(function(b){b.setAttribute("aria-current",String(b.getAttribute("data-v")===v))});
+  if(v==="bill")refreshBill();else if(v==="hist")renderHist();else if(v==="menu")renderMenu();else if(v==="set")renderSet();
+  document.getElementById("mbar").hidden=v!=="bill"||!cnt();
+  window.scrollTo(0,0);
+}
+renderChips();refreshBill();setView("bill");
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("./service-worker.js").catch(function (err) {
+      console.warn("Offline setup failed", err);
+    });
+  });
+}
+</script>
+</body>
+</html>
